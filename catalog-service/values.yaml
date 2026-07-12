@@ -1,0 +1,19 @@
+replicaCount: 2
+image:
+  repository: nginxdemos/hello
+  pullPolicy: IfNotPresent
+  tag: "plain-text"
+serviceAccount:
+  create: false
+service:
+  type: ClusterIP
+  port: 80
+
+autoscaling:
+  enabled: false
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

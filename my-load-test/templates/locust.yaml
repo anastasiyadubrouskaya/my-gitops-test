@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: locust-script
+data:
+  locustfile.py: |
+    from locust import HttpUser, task, between
+    class WebsiteUser(HttpUser):
+        wait_time = between(1, 2)
+        @task
+        def index(self):
+            self.client.get("/")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-locust
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust
+  template:
+    metadata:
+      labels:
+        app: locust
+    spec:
+      volumes:
+        - name: locust-script-vol
+          configMap:
+            name: locust-script
+      containers:
+        - name: locust
+          image: locustio/locust:latest
+          command: ["locust", "-f", "/mnt/locust/locustfile.py", "--headless", "-u", "{{ .Values.locust.users }}", "-r", "{{ .Values.locust.spawnRate }}", "--host", "{{ .Values.locust.targetUrl }}"]
+          volumeMounts:
+            - name: locust-script-vol
+              mountPath: /mnt/locust
+          resources:
+            requests: { memory: "128Mi", cpu: "100m" }
+            limits: { memory: "256Mi" }

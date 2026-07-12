@@ -1,0 +1,43 @@
+executor: "KubernetesExecutor"
+
+triggerer: { enabled: false }
+statsd: { enabled: false }
+redis: { enabled: false }
+pgbouncer: { enabled: false }
+
+scheduler:
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { memory: 512Mi }
+
+webserver:
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { memory: 512Mi }
+  defaultUser:
+    enabled: true
+    role: Admin
+    username: admin
+    password: admin_password
+
+# КЛЮЧЕВОЙ БЛОК: Явно прописываем параметры подключения для Airflow
+data:
+  metadataConnection:
+    user: postgres
+    pass: "stable_airflow_password"
+    protocol: postgresql
+    host: "my-airflow-postgresql"
+    port: 5432
+    db: postgres
+
+# Явно прописываем точно такой же пароль для подчарта PostgreSQL
+postgresql:
+  auth:
+    postgresPassword: "stable_airflow_password"
+
+fernetKey: "Eby8Mcx0LxTkfc8gB_PzV2F_K7gQ8Vv_X9jLZ_abcd1="
+webserverSecretKey: "static_webserver_secret_key_12345"
+
+env:
+  - name: "AIRFLOW__CORE__LOAD_EXAMPLES"
+    value: "True"

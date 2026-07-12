@@ -1,0 +1,8 @@
+loadtest:
+  name: catalog-loadtest
+  # Это внутреннее DNS имя нашего микросервиса в K8s
+  locust_host: "http://my-catalog-catalog-service:80"
+  locust_locustfile_configmap: "locust-script"
+worker:
+  # Запускаем 2 воркера для генерации нагрузки
+  replicas: 2

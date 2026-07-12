@@ -1,0 +1,4 @@
+apiVersion: v2
+name: my-load-test
+description: Мой первый Helm-чарт с Nginx и Locust
+version: 0.1.0

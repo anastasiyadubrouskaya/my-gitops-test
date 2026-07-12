@@ -1,0 +1,6 @@
+app:
+  replicaCount: 1
+locust:
+  targetUrl: "http://my-web-service:80"
+  users: 50
+  spawnRate: 10
