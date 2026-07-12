@@ -16,7 +16,23 @@ spec:
       containers:
       - name: api
         image: hashicorp/http-echo:latest
-        args: ["-text", "Hello from Backend API!"]
+        # Контейнер будет слушать порт 5678 и отвечать на любой запрос
+        args: ["-text", "Hello from Backend API!", "-listen", ":5678"]
+        ports:
+        - containerPort: 5678
+        # Рабочая liveness проба
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5678
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        # НАМЕРЕННО СЛОМАННАЯ readiness проба (стучится на несуществующий порт 9999)
+        readinessProbe:
+          tcpSocket:
+            port: 9999
+          initialDelaySeconds: 3
+          periodSeconds: 5
         resources:
           requests:
             memory: "16Mi"
