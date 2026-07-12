@@ -1,0 +1,26 @@
+name: Helm CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.2.0
+        with:
+          version: v3.14.3
+
+      # Указываем правильный путь к папке с чартом!
+      - name: Run Helm Lint
+        run: helm lint my-load-test
+
+      - name: Run Helm Template
+        run: helm template my-test-release my-load-test
