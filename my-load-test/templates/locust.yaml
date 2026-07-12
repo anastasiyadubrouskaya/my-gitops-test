@@ -32,10 +32,26 @@ spec:
       containers:
         - name: locust
           image: locustio/locust:latest
-          command: ["locust", "-f", "/mnt/locust/locustfile.py", "--headless", "-u", "{{ .Values.locust.users }}", "-r", "{{ .Values.locust.spawnRate }}", "--host", "{{ .Values.locust.targetUrl }}"]
+          # УБРАЛИ --headless и жесткие параметры, теперь управляем через интерфейс!
+          command: ["locust", "-f", "/mnt/locust/locustfile.py"]
+          ports:
+            - containerPort: 8089
           volumeMounts:
             - name: locust-script-vol
               mountPath: /mnt/locust
           resources:
             requests: { memory: "128Mi", cpu: "100m" }
             limits: { memory: "256Mi" }
+---
+# НОВЫЙ БЛОК: Сервис, чтобы мы могли открыть панель Locust
+apiVersion: v1
+kind: Service
+metadata:
+  name: locust-service
+spec:
+  selector:
+    app: locust
+  ports:
+    - protocol: TCP
+      port: 8089
+      targetPort: 8089
