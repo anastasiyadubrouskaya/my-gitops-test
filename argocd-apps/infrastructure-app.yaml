@@ -1,18 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: structural-root-app
+  name: cluster-infrastructure
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/anastasiyadubrouskaya/my-gitops-test.git'
     targetRevision: HEAD
-    # ГЛАВНОЕ ИЗМЕНЕНИЕ: Теперь корень GitOps указывает на папку с описанием приложений
-    path: argocd-apps
+    path: my-cluster-structure
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: default # Файлы внутри сами распределятся по своим ns
   syncPolicy:
     automated:
       prune: true

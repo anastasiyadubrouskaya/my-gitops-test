@@ -1,18 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: structural-root-app
+  name: cluster-load-test
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://github.com/anastasiyadubrouskaya/my-gitops-test.git'
     targetRevision: HEAD
-    # ГЛАВНОЕ ИЗМЕНЕНИЕ: Теперь корень GitOps указывает на папку с описанием приложений
-    path: argocd-apps
+    path: my-load-test # Указываем на папку с твоим Helm-чартом
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: loadtest-env
   syncPolicy:
     automated:
       prune: true
