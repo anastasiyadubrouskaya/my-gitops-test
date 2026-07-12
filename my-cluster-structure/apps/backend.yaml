@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-server
-  namespace: backend # Кладем в папку backend
+  namespace: backend
 spec:
   replicas: 2
   selector:
@@ -15,7 +15,12 @@ spec:
     spec:
       containers:
       - name: api
-        image: hashicorp/http-echo
+        image: hashicorp/http-echo:latest
         args: ["-text", "Hello from Backend API!"]
         resources:
-          requests: { memory: "16Mi", cpu: "10m" }
+          requests:
+            memory: "16Mi"
+            cpu: "10m"
+          limits:
+            memory: "32Mi"
+            cpu: "50m"
