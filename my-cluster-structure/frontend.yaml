@@ -23,3 +23,17 @@ spec:
           limits:
             memory: "32Mi"
             cpu: "50m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-ui-service
+  namespace: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

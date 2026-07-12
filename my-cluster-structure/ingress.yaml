@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  namespace: frontend # Помещаем Ingress в frontend, но он умеет маршрутизировать кросс-неймспейс через ExternalName сервисы или указав полные имена.
+  # В K8s Ingress обычно привязан к одному namespace. Для кросс-namespace роутинга делают отдельные Ingress ресурсы. Сделаем два:
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  namespace: frontend
+spec:
+  rules:
+  - host: my-app.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-ui-service # Сейчас мы его создадим
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-ingress
+  namespace: backend
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: / # Убираем /api из пути перед передачей в под
+spec:
+  rules:
+  - host: my-app.local
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 80
