@@ -27,10 +27,9 @@ spec:
             port: 5678
           initialDelaySeconds: 3
           periodSeconds: 5
-        # НАМЕРЕННО СЛОМАННАЯ readiness проба (стучится на несуществующий порт 9999)
         readinessProbe:
           tcpSocket:
-            port: 9999
+            port: 5678
           initialDelaySeconds: 3
           periodSeconds: 5
         resources:
